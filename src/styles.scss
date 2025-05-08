@@ -1,0 +1,700 @@
+/* You can add global styles to this file, and also import other style files */
+
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  background-color: #f5f5f5;
+}
+
+/* Animation-friendly styles */
+.sala-container {
+  overflow-x: hidden; /* Prevents horizontal scrolling during animations */
+}
+
+.card-poker,
+.status-voto,
+.resultado-votacao,
+.nova-rodada,
+.voto-item,
+.jogadores-grid app-usuario-card,
+.rodada-item {
+  will-change: transform, opacity; /* Optimizes animations */
+}
+
+/* Improved transition states for vote reveals */
+.resultado-votacao .votos-detalhados .voto-item {
+  transition: background-color 0.2s ease-out;
+}
+
+.resultado-votacao .votos-detalhados .voto-item:hover {
+  background-color: rgba(63, 81, 181, 0.05);
+}
+
+.resultado-votacao .consenso {
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin: 1rem 0;
+  color: #3f51b5;
+}
+
+/* Improved transition for new round section */
+.nova-rodada {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background-color: rgba(63, 81, 181, 0.05);
+  border-radius: 8px;
+  border-left: 4px solid #3f51b5;
+}
+
+.nova-rodada h4 {
+  margin-top: 0;
+}
+
+.input-group {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.form-control {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  transition: border-color 0.2s;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: #3f51b5;
+  box-shadow: 0 0 0 2px rgba(63, 81, 181, 0.25);
+}
+
+/* Success button */
+.btn.success {
+  background-color: #4caf50;
+  color: white;
+}
+
+.btn.success:hover:not(:disabled) {
+  background-color: #388e3c;
+}
+
+/* Estilos para a tela de entrada */
+.entrada-container {
+  max-width: 400px;
+  margin: 0 auto;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 20px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.entrada-container h2 {
+  margin-bottom: 20px;
+  color: #3f51b5;
+}
+
+.entrada-container .form-group {
+  margin-bottom: 15px;
+}
+
+.entrada-container input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+/* Estilos para seleção de tipo de usuário */
+.tipo-usuario-grupo {
+  margin-bottom: 20px;
+}
+
+.tipo-usuario-grupo label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: 500;
+  color: #555;
+}
+
+.tipo-usuario-opcoes {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+}
+
+.tipo-opcao {
+  flex: 1;
+  padding: 10px;
+  border: 2px solid #e0e0e0;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+
+.tipo-opcao:hover {
+  border-color: #3f51b5;
+  background-color: #f5f5f5;
+}
+
+.tipo-opcao.selecionado {
+  border-color: #3f51b5;
+  background-color: #e8eaf6;
+}
+
+.tipo-opcao .icone {
+  font-size: 24px;
+  margin-bottom: 5px;
+}
+
+.tipo-opcao .nome {
+  font-weight: 500;
+  margin-bottom: 5px;
+}
+
+.tipo-opcao .descricao {
+  font-size: 12px;
+  color: #777;
+}
+
+.separator {
+  margin: 15px 0;
+  color: #757575;
+  position: relative;
+}
+
+.separator::before,
+.separator::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 45%;
+  height: 1px;
+  background-color: #e0e0e0;
+}
+
+.separator::before {
+  left: 0;
+}
+
+.separator::after {
+  right: 0;
+}
+
+.creditos {
+  margin-top: 15px;
+  font-size: 12px;
+  color: #757575;
+  text-align: center;
+}
+
+/* Estilos para botões */
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.btn.btn-sm {
+  padding: 5px 10px;
+  font-size: 12px;
+}
+
+.btn:disabled {
+  background-color: #cccccc !important;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.btn.primary {
+  background-color: #3f51b5;
+  color: white;
+}
+
+.btn.primary:hover:not(:disabled) {
+  background-color: #303f9f;
+}
+
+.btn.secondary {
+  background-color: #f5f5f5;
+  color: #3f51b5;
+  border: 1px solid #3f51b5;
+}
+
+.btn.secondary:hover:not(:disabled) {
+  background-color: #e8eaf6;
+}
+
+.btn.danger {
+  background-color: #f44336;
+  color: white;
+}
+
+.btn.danger:hover:not(:disabled) {
+  background-color: #d32f2f;
+}
+
+.btn-icon {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 0 5px;
+}
+
+/* Botão de remover participante */
+.btn-remover {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: #ff5252;
+  color: white;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0.2;
+  transition: opacity 0.2s;
+  border: none;
+  z-index: 10;
+}
+
+.card:hover .btn-remover {
+  opacity: 1;
+}
+
+.btn-remover:hover {
+  background-color: #f44336;
+  transform: scale(1.1);
+}
+
+/* Estilos para a sala */
+.sala-container {
+  max-width: 1000px;
+  margin: 30px auto;
+  padding: 20px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden; /* Prevent scrollbar issues */
+}
+
+.sala-header {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.sala-header h2 {
+  margin-bottom: 10px;
+  color: #3f51b5;
+  font-size: 1.8rem;
+}
+
+.sala-info {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.sala-codigo {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.notificacao-copia {
+  position: absolute;
+  bottom: -25px;
+  left: 0;
+  background-color: #4caf50;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  animation: fadeIn 0.3s, fadeOut 0.5s 1.5s;
+  z-index: 100;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+.status-ativo {
+  color: #43a047;
+  font-weight: 500;
+}
+
+.status-encerrado {
+  color: #e53935;
+  font-weight: 500;
+}
+
+.btn-sair {
+  margin-left: 10px;
+  background-color: #f5f5f5;
+  color: #757575;
+  border: none;
+  border-radius: 4px;
+  padding: 3px 8px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-sair:hover {
+  background-color: #e0e0e0;
+  color: #555;
+}
+
+.sala-main {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.sala-interface {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+@media (max-width: 768px) {
+  .sala-interface {
+    grid-template-columns: 1fr;
+  }
+}
+
+.jogadores-lista {
+  background-color: #f5f5f5;
+  padding: 15px;
+  border-radius: 8px;
+}
+
+.jogadores-lista h3 {
+  margin-top: 0;
+  color: #3f51b5;
+  margin-bottom: 15px;
+}
+
+.admin-info {
+  font-size: 12px;
+  color: #757575;
+  background-color: #e8eaf6;
+  padding: 8px;
+  border-radius: 4px;
+  margin-bottom: 15px;
+}
+
+.jogadores-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+}
+
+/* Card styles */
+.card {
+  position: relative;
+  padding: 15px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+}
+
+.area-votacao {
+  padding: 15px;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+}
+
+.area-votacao h3 {
+  margin-top: 0;
+  color: #3f51b5;
+  margin-bottom: 15px;
+}
+
+.cartoes-votacao {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.resultado-votacao {
+  margin-top: 20px;
+  text-align: center;
+  padding: 15px;
+  background-color: #e8f5e9;
+  border-radius: 8px;
+}
+
+.resultado-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.resultado-header h4 {
+  margin: 0;
+  color: #2e7d32;
+}
+
+.consenso {
+  font-size: 24px;
+  font-weight: 500;
+  color: #2e7d32;
+  margin-bottom: 20px;
+}
+
+.votos-detalhados {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px;
+  margin-top: 20px;
+  text-align: left;
+}
+
+.controles-moderador {
+  margin-top: 20px;
+  padding-top: 15px;
+}
+
+.controles-moderador h4 {
+  color: #3f51b5;
+}
+
+.botoes-acao {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.form-proxima-rodada {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.form-proxima-rodada input {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.sala-encerrada {
+  text-align: center;
+  padding: 20px;
+  background-color: #ffebee;
+  border-radius: 8px;
+  color: #c62828;
+}
+
+.sala-footer {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.desenvolvedor-info {
+  margin-top: 15px;
+  font-size: 12px;
+  color: #757575;
+  text-align: center;
+}
+
+/* Estilos para o histórico */
+.historico-container {
+  padding: 15px;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+}
+
+.historico-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.historico-header h3 {
+  margin: 0;
+  color: #3f51b5;
+}
+
+.lista-rodadas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 15px;
+}
+
+.rodada-item {
+  padding: 15px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.rodada-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+}
+
+.rodada-numero {
+  font-weight: bold;
+  color: #3f51b5;
+  margin-bottom: 5px;
+}
+
+.rodada-descricao {
+  margin-bottom: 10px;
+}
+
+.rodada-resultado {
+  font-weight: 500;
+}
+
+.sem-historico {
+  padding: 30px;
+  text-align: center;
+  color: #757575;
+}
+
+.detalhe-rodada-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.detalhe-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.detalhe-rodada {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.detalhe-rodada h4 {
+  margin-top: 15px;
+  color: #3f51b5;
+}
+
+.resultado-votos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+  margin: 15px 0;
+}
+
+.voto-item {
+  padding: 10px;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.resultado-final {
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #e8f5e9;
+  border-radius: 4px;
+  color: #2e7d32;
+}
+
+/* Estilos para contêiner de exportação */
+.export-container-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  animation: fadeIn 0.3s forwards;
+}
+
+.export-container-wrapper {
+  width: 800px;
+  max-width: 90%;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Tipo de participante (espectador/jogador) */
+.tipo-badge {
+  display: inline-block;
+  font-size: 10px;
+  padding: 2px 5px;
+  border-radius: 3px;
+  margin-left: 5px;
+  font-weight: normal;
+}
+
+.tipo-badge.participante {
+  background-color: #e3f2fd;
+  color: #1976d2;
+}
+
+.tipo-badge.espectador {
+  background-color: #f5f5f5;
+  color: #757575;
+}

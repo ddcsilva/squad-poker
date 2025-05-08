@@ -1,0 +1,298 @@
+<div class="sala-container" *ngIf="sala && jogador" [@pageTransition]>
+  <!-- Cabeçalho da sala -->
+  <header class="sala-header">
+    <h2>♠️ {{ sala.descricaoVotacao }}</h2>
+    <div class="sala-info">
+      <div class="sala-codigo">
+        <span>Código: {{ exibirIdTruncado() }}</span>
+        <button
+          class="btn-icon"
+          (click)="copiarCodigoSala()"
+          title="Copiar código"
+        >
+          📋
+        </button>
+        <span *ngIf="mostrarNotificacaoCopia" class="notificacao-copia"
+          >Código copiado!</span
+        >
+      </div>
+      <div class="sala-status">
+        <span
+          [class.status-ativo]="sala.status === 'aguardando'"
+          [class.status-encerrado]="sala.status === 'encerrada'"
+        >
+          {{ sala.status === "aguardando" ? "🟢 Ativa" : "🔴 Encerrada" }}
+        </span>
+        <button class="btn-sair" (click)="voltarTelaInicial()">Sair</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Área principal (normal ou histórico) -->
+  <main class="sala-main">
+    <!-- Histórico de rodadas (se ativado) -->
+    <section *ngIf="mostrarHistorico" class="historico-container" [@newRound]>
+      <div class="historico-header">
+        <h3>Histórico de Rodadas</h3>
+        <button class="btn secondary" (click)="toggleHistorico()">
+          Voltar
+        </button>
+      </div>
+
+      <div
+        *ngIf="!rodadaSelecionada"
+        class="lista-rodadas"
+        [@listAnimation]="sala.historicoRodadas.length"
+      >
+        <div
+          *ngFor="let rodada of sala.historicoRodadas"
+          class="rodada-item"
+          (click)="selecionarRodada(rodada)"
+        >
+          <div class="rodada-numero">Rodada {{ rodada.numero }}</div>
+          <div class="rodada-descricao">{{ rodada.descricao }}</div>
+          <div class="rodada-resultado">
+            Resultado: {{ rodada.resultado || "-" }}
+          </div>
+        </div>
+
+        <div *ngIf="sala.historicoRodadas.length === 0" class="sem-historico">
+          Nenhuma rodada finalizada ainda.
+        </div>
+      </div>
+
+      <div
+        *ngIf="rodadaSelecionada"
+        class="detalhe-rodada-container"
+        [@newRound]
+      >
+        <div class="detalhe-header">
+          <button class="btn secondary" (click)="voltarDoHistorico()">
+            ← Voltar para a lista
+          </button>
+
+          <button
+            class="btn primary"
+            (click)="exportarRodadaHistorico()"
+            [disabled]="exportandoImagem"
+          >
+            <span *ngIf="!exportandoImagem">📷 Salvar como Imagem</span>
+            <span *ngIf="exportandoImagem">Processando...</span>
+          </button>
+        </div>
+
+        <div class="detalhe-rodada">
+          <h4>
+            Rodada {{ rodadaSelecionada.numero }} -
+            {{ rodadaSelecionada.descricao }}
+          </h4>
+
+          <div
+            class="resultado-votos"
+            [@listAnimation]="objectKeys(rodadaSelecionada.votos).length"
+          >
+            <div
+              *ngFor="let jogadorId of objectKeys(rodadaSelecionada.votos)"
+              class="voto-item"
+            >
+              <span class="nome-jogador">{{
+                obterNomeJogador(jogadorId)
+              }}</span>
+              <span class="valor-voto">{{
+                rodadaSelecionada.votos[jogadorId]
+              }}</span>
+            </div>
+          </div>
+
+          <div class="resultado-final">
+            <strong>Média:</strong> {{ rodadaSelecionada.resultado || "-" }}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interface principal da sala -->
+    <section *ngIf="!mostrarHistorico" class="sala-interface">
+      <!-- Lista de jogadores -->
+      <div class="jogadores-lista">
+        <h3>Participantes</h3>
+        <div *ngIf="ehDonoDaSala()" class="admin-info">
+          Como dono da sala, você pode remover participantes clicando no ✕ que
+          aparece ao passar o mouse sobre o cartão de cada usuário.
+        </div>
+        <div class="jogadores-grid" [@listAnimation]="sala.jogadores.length">
+          <app-usuario-card
+            *ngFor="let j of sala.jogadores"
+            [jogador]="j"
+            [votosRevelados]="sala.votosRevelados"
+            [ehDono]="j.nome === sala.nomeDono"
+            [podeRemover]="ehDonoDaSala()"
+            [nomeDono]="sala.nomeDono"
+            (remover)="removerParticipante($event)"
+          >
+          </app-usuario-card>
+        </div>
+      </div>
+
+      <!-- Área de votação -->
+      <div
+        class="area-votacao"
+        [class.desabilitada]="sala.status === 'encerrada'"
+      >
+        <h3>
+          Sua votação
+          <span *ngIf="ehEspectador()" class="espectador-badge"
+            >(Modo Espectador)</span
+          >
+        </h3>
+
+        <div *ngIf="sala.status !== 'encerrada'">
+          <div
+            class="cartoes-votacao"
+            *ngIf="!sala.votosRevelados && !ehEspectador()"
+            [@listAnimation]="cartasPoker.length"
+          >
+            <app-card-poker
+              *ngFor="let carta of cartasPoker"
+              [valor]="carta"
+              [selecionado]="jogador.voto === carta"
+              [desabilitado]="sala.votosRevelados"
+              (selecionar)="selecionarCarta($event)"
+            >
+            </app-card-poker>
+          </div>
+
+          <div
+            class="espectador-info"
+            *ngIf="!sala.votosRevelados && ehEspectador()"
+          >
+            <p>
+              Você está no modo espectador e não pode votar. Acompanhe a votação
+              dos demais participantes.
+            </p>
+          </div>
+
+          <div
+            class="resultado-votacao"
+            *ngIf="sala.votosRevelados"
+            [@revealVotes]
+          >
+            <div class="resultado-header">
+              <h4>Resultado da Votação</h4>
+
+              <button
+                class="btn primary btn-sm"
+                (click)="exportarResultadoAtual()"
+                [disabled]="exportandoImagem"
+              >
+                <span *ngIf="!exportandoImagem">📷 Exportar</span>
+                <span *ngIf="exportandoImagem">...</span>
+              </button>
+            </div>
+
+            <p class="consenso">{{ calcularResultadoVotos() }}</p>
+
+            <div
+              class="votos-detalhados"
+              [@listAnimation]="sala.jogadores.length"
+            >
+              <div class="voto-item" *ngFor="let j of sala.jogadores">
+                <span class="nome-jogador">{{ j.nome }}</span>
+                <span class="valor-voto">{{ j.voto || "-" }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Controles de moderador (apenas para o dono da sala) -->
+          <div class="controles-moderador" *ngIf="ehDonoDaSala()">
+            <hr />
+            <h4>Controles de Moderador</h4>
+
+            <div class="botoes-acao">
+              <button
+                class="btn secondary"
+                *ngIf="!sala.votosRevelados"
+                (click)="revelarVotos()"
+                [disabled]="!todosVotaram()"
+              >
+                🔍 Revelar Votos
+              </button>
+
+              <button
+                class="btn success"
+                *ngIf="sala.votosRevelados"
+                (click)="reiniciarVotacao()"
+              >
+                🔄 Reiniciar Votação
+              </button>
+
+              <button
+                class="btn danger"
+                *ngIf="sala.status === 'aguardando'"
+                (click)="encerrarSala()"
+              >
+                ⛔ Encerrar Sala
+              </button>
+            </div>
+
+            <div class="nova-rodada" *ngIf="sala.votosRevelados" [@newRound]>
+              <h4>Iniciar Nova Rodada</h4>
+              <div class="input-group">
+                <input
+                  type="text"
+                  [(ngModel)]="novaDescricao"
+                  placeholder="Descrição da nova rodada"
+                  class="form-control"
+                />
+                <button
+                  class="btn primary"
+                  [disabled]="!novaDescricao.trim()"
+                  (click)="proximaRodada()"
+                >
+                  ▶️ Iniciar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Rodapé com controle de histórico e exportação -->
+  <footer class="sala-footer">
+    <button
+      class="btn secondary"
+      (click)="toggleHistorico()"
+      *ngIf="sala.historicoRodadas.length > 0"
+    >
+      {{ !mostrarHistorico ? "📋 Ver Histórico" : "🔙 Voltar para a Sala" }}
+    </button>
+    <div class="desenvolvedor-info">Desenvolvido por Danilo Silva</div>
+  </footer>
+
+  <!-- Contêiner oculto para exportação das imagens -->
+  <div class="export-container-background" *ngIf="exibirAreaExportacao">
+    <div #exportContainer class="export-container-wrapper">
+      <app-resultado-export
+        [tituloPrincipal]="dadosExportacao?.titulo || ''"
+        [descricaoVotacao]="dadosExportacao?.descricao || ''"
+        [codigoSala]="dadosExportacao?.codigoSala || ''"
+        [mediaFinal]="dadosExportacao?.media || ''"
+        [jogadores]="dadosExportacao?.jogadores || []"
+        [dataExportacao]="dadosExportacao?.data || dataAtual"
+      ></app-resultado-export>
+    </div>
+  </div>
+
+  <!-- Diálogo de confirmação antes de sair -->
+  <app-confirmation-dialog
+    [visible]="mostrarDialogoSaida"
+    title="Sair da votação"
+    message="Há uma votação em andamento. Se você sair agora, seu voto será perdido. Tem certeza que deseja sair?"
+    confirmButtonText="Sim, sair"
+    cancelButtonText="Não, continuar"
+    (confirm)="confirmarSaida()"
+    (cancel)="cancelarSaida()"
+  ></app-confirmation-dialog>
+</div>

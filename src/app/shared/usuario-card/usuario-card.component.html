@@ -1,0 +1,45 @@
+<div class="card">
+  <div class="avatar" [style.backgroundColor]="jogador.cor">
+    {{ jogador.nome.charAt(0).toUpperCase() }}
+  </div>
+  <div class="info">
+    <div class="nome-container">
+      <strong>{{ jogador.nome }}</strong>
+      <span *ngIf="ehDono" class="badge-dono">👑</span>
+      <span
+        class="tipo-badge"
+        [class.participante]="jogador.tipo === 'participante'"
+        [class.espectador]="jogador.tipo === 'espectador'"
+      >
+        {{ jogador.tipo === "participante" ? "🎮" : "👁️" }}
+      </span>
+    </div>
+
+    <div class="status-voto">
+      <ng-container *ngIf="jogador.voto">
+        <span class="status votou">
+          <ng-container *ngIf="!votosRevelados">Votou</ng-container>
+          <ng-container *ngIf="votosRevelados">
+            <span [@revealVotes]>{{ jogador.voto }}</span>
+          </ng-container>
+        </span>
+      </ng-container>
+
+      <ng-container *ngIf="!jogador.voto">
+        <span class="status pendente">
+          {{ jogador.tipo === "espectador" ? "Espectador" : "Não votou" }}
+        </span>
+      </ng-container>
+    </div>
+  </div>
+
+  <!-- Botão de remover (visível apenas para o dono da sala e não para o próprio dono) -->
+  <button
+    *ngIf="podeRemover && !ehDono && jogador.nome !== nomeDono"
+    class="btn-remover"
+    (click)="removerUsuario()"
+    title="Remover participante"
+  >
+    ×
+  </button>
+</div>

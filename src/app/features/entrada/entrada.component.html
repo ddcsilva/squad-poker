@@ -1,0 +1,78 @@
+<div class="entrada-container">
+  <h2>♠️ Squad Poker</h2>
+
+  <div class="form-group">
+    <input [(ngModel)]="nomeJogador" placeholder="Digite seu nome" required />
+  </div>
+
+  <div class="form-group tipo-usuario-grupo">
+    <label>Como deseja participar?</label>
+    <div class="tipo-usuario-opcoes">
+      <div
+        class="tipo-opcao"
+        [class.selecionado]="tipoUsuario === 'participante'"
+        (click)="tipoUsuario = 'participante'"
+      >
+        <div class="icone">🎮</div>
+        <div class="nome">Participante</div>
+        <div class="descricao">Vota nas rodadas</div>
+      </div>
+
+      <div
+        class="tipo-opcao"
+        [class.selecionado]="tipoUsuario === 'espectador'"
+        (click)="tipoUsuario = 'espectador'"
+      >
+        <div class="icone">👁️</div>
+        <div class="nome">Espectador</div>
+        <div class="descricao">Apenas observa</div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!mostrarCampoSala">
+    <div class="form-group">
+      <input
+        [(ngModel)]="descricaoVotacao"
+        placeholder="Descrição da votação (ex: 'Story 123')"
+        required
+      />
+    </div>
+
+    <button
+      class="btn primary"
+      (click)="criarSala()"
+      [disabled]="!nomeJogador.trim() || !descricaoVotacao.trim()"
+    >
+      Criar Sala
+    </button>
+
+    <p class="separator">ou</p>
+
+    <button class="btn secondary" (click)="alternarModoEntrada()">
+      Entrar em Sala Existente
+    </button>
+  </div>
+
+  <div *ngIf="mostrarCampoSala">
+    <div class="form-group">
+      <input [(ngModel)]="codigoSala" placeholder="Código da sala" required />
+    </div>
+
+    <button
+      class="btn primary"
+      (click)="entrarEmSala()"
+      [disabled]="!nomeJogador.trim() || !codigoSala.trim()"
+    >
+      Entrar na Sala
+    </button>
+
+    <p class="separator">ou</p>
+
+    <button class="btn secondary" (click)="alternarModoEntrada()">
+      Criar Nova Sala
+    </button>
+  </div>
+
+  <div class="creditos">Desenvolvido por Danilo Silva</div>
+</div>

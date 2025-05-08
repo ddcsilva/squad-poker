@@ -1,0 +1,54 @@
+.card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background-color: white;
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  width: 200px;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: white;
+  flex-shrink: 0;
+}
+
+.info {
+  flex: 1;
+}
+
+.nome-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.badge-dono {
+  margin-left: 5px;
+  font-size: 12px;
+}
+
+.status {
+  display: inline-block;
+  font-size: 12px;
+  padding: 3px 6px;
+  border-radius: 4px;
+}
+
+.status.votou {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.status.pendente {
+  background-color: #fafafa;
+  color: #757575;
+}
