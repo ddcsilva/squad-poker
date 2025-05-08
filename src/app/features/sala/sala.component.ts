@@ -101,7 +101,18 @@ export class SalaComponent implements OnInit, OnDestroy {
   routerSubscription: Subscription | null = null;
   votoPendente: string | null = null;
   novaDescricao: string = '';
-  cartasPoker: string[] = ['1', '2', '3', '5', '8', '13', '21', '?', '☕'];
+  cartasPoker: string[] = [
+    '1',
+    '2',
+    '3',
+    '5',
+    '8',
+    '13',
+    '21',
+    '?',
+    '☕',
+    '♾️',
+  ];
   mostrarHistorico: boolean = false;
   rodadaSelecionada: HistoricoRodada | null = null;
 
@@ -367,7 +378,7 @@ export class SalaComponent implements OnInit, OnDestroy {
     if (votos.length === 0) return 'Nenhum voto';
 
     // Filtrar votos não numéricos para estatísticas
-    const votosNumericos = votos.filter((v) => !['?', '☕'].includes(v));
+    const votosNumericos = votos.filter((v) => !['?', '☕', '♾️'].includes(v));
 
     if (votosNumericos.length === 0) {
       return 'Sem consenso';
@@ -415,7 +426,9 @@ export class SalaComponent implements OnInit, OnDestroy {
     if (votosArray.length === 0) return '-';
 
     // Filtrar votos não numéricos
-    const votosNumericos = votosArray.filter((v) => !['?', '☕'].includes(v));
+    const votosNumericos = votosArray.filter(
+      (v) => !['?', '☕', '♾️'].includes(v)
+    );
 
     if (votosNumericos.length === 0) return '?';
 
@@ -441,8 +454,8 @@ export class SalaComponent implements OnInit, OnDestroy {
 
   exibirIdTruncado(): string {
     if (!this.sala) return '';
-    // Exibir apenas os primeiros 8 caracteres do ID
-    return this.sala.id.substring(0, 8) + '...';
+    // Return the complete ID instead of truncating it
+    return this.sala.id;
   }
 
   copiarCodigoSala() {
