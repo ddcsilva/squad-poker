@@ -2,7 +2,7 @@
 
 Uma aplicação web moderna para sessões de Planning Poker, facilitando a estimativa de esforço em times ágeis.
 
-♠️ [Acesse a aplicação](https://ddcsilva.github.io/squad-poker2/)
+♠️ [Acesse a aplicação](https://ddcsilva.github.io/squad-poker/)
 
 ## Sobre o Projeto
 
@@ -31,7 +31,7 @@ Squad Poker é uma ferramenta de Planning Poker para equipes ágeis que desejam 
 
 ## Como usar
 
-1. **Acesse a aplicação**: Visite [Squad Poker](https://ddcsilva.github.io/squad-poker2/)
+1. **Acesse a aplicação**: Visite [Squad Poker](https://ddcsilva.github.io/squad-poker/)
 2. **Crie uma sala**: Digite seu nome, descrição da votação e escolha se deseja participar ou apenas observar
 3. **Compartilhe o código**: Envie o código da sala para os outros participantes
 4. **Vote nas rodadas**: Selecione seus valores nas cartas disponíveis
@@ -74,7 +74,7 @@ A aplicação estará disponível em `http://localhost:4200/`.
 
 Para conectar ao Firebase, crie um arquivo `.env` na raiz do projeto com as seguintes variáveis:
 
-```
+```bash
 VITE_FIREBASE_API_KEY=seu_api_key
 VITE_FIREBASE_AUTH_DOMAIN=seu_auth_domain
 VITE_FIREBASE_PROJECT_ID=seu_project_id
