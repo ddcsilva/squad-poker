@@ -1,14 +1,15 @@
-<app-sala-botoes-acao
-  *ngIf="ehModerador"
-  [votosRevelados]="votosRevelados"
-  [descricaoNovaRodada]="descricaoNovaRodada"
-  [processando]="processando"
-  [temEmpate]="temEmpate"
-  [participantesQueVotaram]="participantesQueVotaram"
-  [totalParticipantes]="totalParticipantes"
-  (revelarVotos)="revelarVotos.emit()"
-  (reiniciarVotacao)="reiniciarVotacao.emit()"
-  (descricaoMudou)="descricaoMudou.emit($event)"
-  (criarNovaRodada)="criarNovaRodada.emit()"
-  (encerrarSala)="encerrarSala.emit()">
-</app-sala-botoes-acao>
+@if (ehModerador()) {
+  <app-sala-botoes-acao
+    [votosRevelados]="votosRevelados()"
+    [descricaoNovaRodada]="descricaoNovaRodada()"
+    [processando]="processando()"
+    [temEmpate]="temEmpate()"
+    [participantesQueVotaram]="participantesQueVotaram()"
+    [totalParticipantes]="totalParticipantes()"
+    (revelarVotos)="revelarVotos.emit()"
+    (reiniciarVotacao)="reiniciarVotacao.emit()"
+    (descricaoMudou)="descricaoMudou.emit($event)"
+    (criarNovaRodada)="criarNovaRodada.emit()"
+    (encerrarSala)="encerrarSala.emit()">
+  </app-sala-botoes-acao>
+}

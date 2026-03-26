@@ -43,6 +43,7 @@ Thumbs.db
 
 # Environment Files
 /src/environments/environment.ts
+/src/environments/environment.production.ts
 
 # Firebase local state/cache
 .firebase/
@@ -55,3 +56,6 @@ Thumbs.db
 
 # Yarn lock (se não usar yarn)
 yarn.lock
+
+# Agent Folder
+.claude/

@@ -2,7 +2,6 @@ import { Injectable, inject, signal } from '@angular/core';
 import { Sala, HistoricoRodada } from '../models/sala.model';
 import { Usuario } from '../models/usuario.model';
 import { Observable, tap } from 'rxjs';
-import { v4 as uuidv4 } from 'uuid';
 import { SALA_REPOSITORY } from '../repositories/sala-repository.token';
 import { ISalaRepository } from '../interfaces/sala-repository.interface';
 import { VotacaoService } from './votacao.service';
@@ -42,7 +41,7 @@ export class SalaService {
 
     // 1. Criar o objeto do usuário dono
     const usuario: Usuario = {
-      id: uuidv4(),
+      id: crypto.randomUUID(),
       nome: dadosSegura.nome,
       voto: null,
       cor: this.gerarCorAleatoria(),
@@ -51,7 +50,7 @@ export class SalaService {
 
     // 2. Criar o objeto da sala
     const novaSala: Sala = {
-      id: uuidv4(),
+      id: crypto.randomUUID(),
       nomeDono: dadosSegura.nome,
       descricaoVotacao: dadosSegura.descricao,
       jogadores: [usuario],
@@ -107,7 +106,7 @@ export class SalaService {
 
     // 4. Criar novo usuário
     const novoUsuario: Usuario = {
-      id: uuidv4(),
+      id: crypto.randomUUID(),
       nome: dadosSeguros.nome,
       voto: null,
       cor: this.gerarCorAleatoria(),

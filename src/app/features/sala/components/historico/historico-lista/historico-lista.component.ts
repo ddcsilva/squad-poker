@@ -1,23 +1,22 @@
-import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, input, output } from '@angular/core';
+import { DatePipe } from '@angular/common';
 import { HistoricoRodada } from '../../../../../core/models/sala.model';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { IconesService } from '../../../../../core/services/icones.service';
 
 @Component({
-  selector: 'app-historico-lista',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './historico-lista.component.html',
+    selector: 'app-historico-lista',
+    imports: [DatePipe],
+    templateUrl: './historico-lista.component.html'
 })
 export class HistoricoListaComponent {
   private iconesService = inject(IconesService);
 
-  @Input() historicoRodadas: HistoricoRodada[] = [];
-  @Input() exportandoPDF: boolean = false;
+  readonly historicoRodadas = input<HistoricoRodada[]>([]);
+  readonly exportandoPDF = input<boolean>(false);
 
-  @Output() selecionarRodada = new EventEmitter<HistoricoRodada>();
-  @Output() exportarHistorico = new EventEmitter<void>();
+  readonly selecionarRodada = output<HistoricoRodada>();
+  readonly exportarHistorico = output<void>();
 
   get iconeDownload(): SafeHtml {
     return this.iconesService.iconeDownload;

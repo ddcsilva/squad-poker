@@ -1,24 +1,23 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, input, output } from '@angular/core';
+import { NgClass } from '@angular/common';
 import { Usuario } from '../../../../core/models/usuario.model';
 import { ConfirmacaoModalComponent } from '../../../../shared/components/confirmacao-modal/confirmacao-modal.component';
 
 @Component({
-  selector: 'app-cabecalho-sala',
-  standalone: true,
-  imports: [CommonModule, ConfirmacaoModalComponent],
-  templateUrl: './cabecalho-sala.component.html',
+    selector: 'app-cabecalho-sala',
+    imports: [NgClass, ConfirmacaoModalComponent],
+    templateUrl: './cabecalho-sala.component.html'
 })
 export class CabecalhoSalaComponent {
-  @Input() codigoSala: string = '';
-  @Input() usuario: Usuario | null = null;
-  @Input() status: 'aguardando' | 'encerrada' = 'aguardando';
-  @Input() descricaoVotacao: string = '';
-  @Input() copiado: boolean = false;
-  @Input() ehDono: boolean = false;
+  readonly codigoSala = input<string>('');
+  readonly usuario = input<Usuario | null>(null);
+  readonly status = input<'aguardando' | 'encerrada'>('aguardando');
+  readonly descricaoVotacao = input<string>('');
+  readonly copiado = input<boolean>(false);
+  readonly ehDono = input<boolean>(false);
 
-  @Output() copiarCodigo = new EventEmitter<void>();
-  @Output() sair = new EventEmitter<void>();
+  readonly copiarCodigo = output<void>();
+  readonly sair = output<void>();
 
   // Estado do modal
   modalSairVisivel = false;
@@ -29,9 +28,10 @@ export class CabecalhoSalaComponent {
 
   aoCopiarCodigo(): void {
     navigator.clipboard
-      .writeText(this.codigoSala)
+      .writeText(this.codigoSala())
       .then(() => {
         this.vibrarDispositivo(100);
+        // TODO: The 'emit' function requires a mandatory void argument
         this.copiarCodigo.emit();
       })
       .catch(error => {
@@ -54,12 +54,13 @@ export class CabecalhoSalaComponent {
   // Método chamado quando a saída é confirmada no modal
   confirmarSair(): void {
     this.modalSairVisivel = false;
+    // TODO: The 'emit' function requires a mandatory void argument
     this.sair.emit();
   }
 
   // Mensagem contextual para o modal
   obterMensagemSair(): string {
-    if (this.ehDono) {
+    if (this.ehDono()) {
       return 'Você é o dono desta sala. Sair irá ENCERRAR a sala para todos os participantes. Deseja continuar?';
     }
     return 'Tem certeza que deseja sair desta sala? Você será removido da lista de participantes.';
@@ -67,7 +68,7 @@ export class CabecalhoSalaComponent {
 
   // Tipo de botão para o modal
   obterTipoBotaoSair(): 'primario' | 'perigo' | 'sucesso' {
-    return this.ehDono ? 'perigo' : 'primario';
+    return this.ehDono() ? 'perigo' : 'primario';
   }
 
   private vibrarDispositivo(duracao: number): void {
@@ -86,10 +87,10 @@ export class CabecalhoSalaComponent {
 
   private mostrarCodigoParaCopia(): void {
     const textoTemp = document.createElement('textarea');
-    textoTemp.value = `Squad Poker - Código da Sala: ${this.codigoSala}`;
+    textoTemp.value = `Squad Poker - Código da Sala: ${this.codigoSala()}`;
     document.body.appendChild(textoTemp);
     textoTemp.select();
     document.body.removeChild(textoTemp);
-    alert(`📋 Código da sala: ${this.codigoSala}`);
+    alert(`📋 Código da sala: ${this.codigoSala()}`);
   }
 }

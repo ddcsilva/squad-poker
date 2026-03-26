@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { Usuario } from '../../../../core/models/usuario.model';
 import { CartaoVotacaoComponent } from '../cartao-votacao/cartao-votacao.compoment';
 import { StatusVotacaoComponent } from '../status-votacao/status-votacao.component';
@@ -7,7 +7,7 @@ import { StatusVotacaoComponent } from '../status-votacao/status-votacao.compone
 @Component({
   selector: 'app-sala-votacao-area',
   standalone: true,
-  imports: [CommonModule, CartaoVotacaoComponent, StatusVotacaoComponent],
+  imports: [CartaoVotacaoComponent, StatusVotacaoComponent],
   templateUrl: './sala-votacao-area.component.html',
 })
 export class SalaVotacaoAreaComponent {

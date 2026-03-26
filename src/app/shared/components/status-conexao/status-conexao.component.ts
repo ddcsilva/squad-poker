@@ -1,12 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { signal } from '@angular/core';
 
 @Component({
-  selector: 'app-status-conexao',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './status-conexao.component.html',
+    selector: 'app-status-conexao',
+    imports: [],
+    templateUrl: './status-conexao.component.html'
 })
 export class StatusConexaoComponent implements OnInit, OnDestroy {
   estaOnline = signal(navigator.onLine);

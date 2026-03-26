@@ -10,7 +10,9 @@
         aria-label="Copiar código da sala">
         <span class="text-sm">📋</span>
         <span class="opacity-75">Copiar ID da sala</span>
-        <span *ngIf="copiado" class="text-green-600 ml-1 animate-fade-in">Copiado!</span>
+        @if (copiado()) {
+          <span class="text-green-600 ml-1 animate-fade-in">Copiado!</span>
+        }
       </button>
     </div>
 
@@ -20,23 +22,29 @@
       <span
         class="flex items-center text-sm font-medium"
         [ngClass]="{
-          'text-green-600': status === 'aguardando',
-          'text-red-600': status === 'encerrada'
+          'text-green-600': status() === 'aguardando',
+          'text-red-600': status() === 'encerrada'
         }">
-        <ng-container [ngSwitch]="status">
-          <span *ngSwitchCase="'aguardando'">🟢 Sala Ativa</span>
-          <span *ngSwitchCase="'encerrada'">🔴 Sala Encerrada</span>
-        </ng-container>
+        @switch (status()) {
+          @case ('aguardando') {
+            <span>🟢 Sala Ativa</span>
+          }
+          @case ('encerrada') {
+            <span>🔴 Sala Encerrada</span>
+          }
+        }
       </span>
 
       <!-- Avatar -->
-      <div class="flex items-center" *ngIf="usuario">
-        <div
-          [style.background-color]="usuario.cor"
-          class="w-7 h-7 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-sm">
-          {{ obterInicialNome(usuario.nome) }}
+      @if (usuario(); as usr) {
+        <div class="flex items-center">
+          <div
+            [style.background-color]="usr.cor"
+            class="w-7 h-7 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-sm">
+            {{ obterInicialNome(usr.nome) }}
+          </div>
         </div>
-      </div>
+      }
 
       <!-- Botão Sair -->
       <button
@@ -52,16 +60,16 @@
 <!-- Descrição da votação em destaque -->
 <div class="px-3 sm:px-6 py-2 sm:py-3 bg-gray-50 border-b">
   <h2 class="text-base sm:text-lg font-semibold text-gray-800 text-center">
-    {{ descricaoVotacao }}
+    {{ descricaoVotacao() }}
   </h2>
 </div>
 
 <!-- Modal de confirmação -->
 <app-confirmacao-modal
   [visivel]="modalSairVisivel"
-  [titulo]="ehDono ? 'Encerrar Sala' : 'Sair da Sala'"
+  [titulo]="ehDono() ? 'Encerrar Sala' : 'Sair da Sala'"
   [mensagem]="obterMensagemSair()"
-  [textoBotaoConfirmar]="ehDono ? 'Sim, Encerrar Sala' : 'Sim, Sair'"
+  [textoBotaoConfirmar]="ehDono() ? 'Sim, Encerrar Sala' : 'Sim, Sair'"
   [tipoBotaoConfirmar]="obterTipoBotaoSair()"
   (confirmar)="confirmarSair()"
   (cancelar)="fecharModalSair()"

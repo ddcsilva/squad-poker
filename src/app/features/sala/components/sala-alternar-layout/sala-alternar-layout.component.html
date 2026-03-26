@@ -3,19 +3,19 @@
     <div class="bg-gray-100 p-1 rounded-lg inline-flex">
       <button
         class="px-4 py-2 rounded-md transition-colors text-sm"
-        [class.bg-white]="!mostrandoHistorico"
-        [class.shadow-sm]="!mostrandoHistorico"
-        [class.text-poker-blue]="!mostrandoHistorico"
-        [class.font-medium]="!mostrandoHistorico"
+        [class.bg-white]="!mostrandoHistorico()"
+        [class.shadow-sm]="!mostrandoHistorico()"
+        [class.text-poker-blue]="!mostrandoHistorico()"
+        [class.font-medium]="!mostrandoHistorico()"
         (click)="alternarVisualizacao.emit(false)">
         Votação Atual
       </button>
       <button
         class="px-4 py-2 rounded-md transition-colors text-sm"
-        [class.bg-white]="mostrandoHistorico"
-        [class.shadow-sm]="mostrandoHistorico"
-        [class.text-poker-blue]="mostrandoHistorico"
-        [class.font-medium]="mostrandoHistorico"
+        [class.bg-white]="mostrandoHistorico()"
+        [class.shadow-sm]="mostrandoHistorico()"
+        [class.text-poker-blue]="mostrandoHistorico()"
+        [class.font-medium]="mostrandoHistorico()"
         (click)="alternarVisualizacao.emit(true)">
         Histórico
       </button>

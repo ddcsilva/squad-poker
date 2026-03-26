@@ -1,33 +1,32 @@
-import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, input, output } from '@angular/core';
+import { NgClass } from '@angular/common';
 import { Usuario } from '../../../../core/models/usuario.model';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { IconesService } from '../../../../core/services/icones.service';
 
 @Component({
-  selector: 'app-jogadores-lista',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './jogadores-lista.component.html',
-  animations: [
-    trigger('jogadorAnimacao', [
-      transition(':enter', [
-        style({ opacity: '0', transform: 'translateY(8px)' }),
-        animate('200ms ease-out', style({ opacity: '1', transform: 'translateY(0)' })),
-      ]),
-      transition(':leave', [animate('150ms ease-in', style({ opacity: '0', transform: 'translateY(8px)' }))]),
-    ]),
-  ],
+    selector: 'app-jogadores-lista',
+    imports: [NgClass],
+    templateUrl: './jogadores-lista.component.html',
+    animations: [
+        trigger('jogadorAnimacao', [
+            transition(':enter', [
+                style({ opacity: '0', transform: 'translateY(8px)' }),
+                animate('200ms ease-out', style({ opacity: '1', transform: 'translateY(0)' })),
+            ]),
+            transition(':leave', [animate('150ms ease-in', style({ opacity: '0', transform: 'translateY(8px)' }))]),
+        ]),
+    ]
 })
 export class JogadoresListaComponent {
   private iconesService = inject(IconesService);
 
-  @Input() jogadores: Usuario[] = [];
-  @Input() nomeDono: string = '';
-  @Input() permissaoRemover: boolean = false;
+  readonly jogadores = input<Usuario[]>([]);
+  readonly nomeDono = input<string>('');
+  readonly permissaoRemover = input<boolean>(false);
 
-  @Output() removerJogador = new EventEmitter<string>();
+  readonly removerJogador = output<string>();
 
   get iconeCoroa(): SafeHtml {
     return this.iconesService.iconeCoroa;
@@ -46,7 +45,7 @@ export class JogadoresListaComponent {
   }
 
   ehDonoDaSala(jogador: Usuario): boolean {
-    return jogador.nome === this.nomeDono;
+    return jogador.nome === this.nomeDono();
   }
 
   obterClasseStatus(jogador: Usuario): string {
@@ -54,7 +53,7 @@ export class JogadoresListaComponent {
   }
 
   podeRemoverJogador(jogador: Usuario): boolean {
-    return this.permissaoRemover && jogador.nome !== this.nomeDono;
+    return this.permissaoRemover() && jogador.nome !== this.nomeDono();
   }
 
   obterStatusTexto(jogador: Usuario): string {

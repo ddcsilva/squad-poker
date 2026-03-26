@@ -5,14 +5,13 @@ import { AtualizacaoDisponivelComponent } from './shared/components/atualizacao-
 import { AtualizacaoService } from './core/services/atualizacao.service';
 
 @Component({
-  selector: 'app-root',
-  standalone: true,
-  imports: [RouterOutlet, StatusConexaoComponent, AtualizacaoDisponivelComponent],
-  template: `
+    selector: 'app-root',
+    imports: [RouterOutlet, StatusConexaoComponent, AtualizacaoDisponivelComponent],
+    template: `
     <router-outlet></router-outlet>
     <app-status-conexao></app-status-conexao>
     <app-atualizacao-disponivel></app-atualizacao-disponivel>
-  `,
+  `
 })
 export class AppComponent {
   private atualizacaoService = inject(AtualizacaoService);

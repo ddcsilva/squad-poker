@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { SwUpdate, VersionReadyEvent } from '@angular/service-worker';
 import { filter } from 'rxjs/operators';
 
@@ -6,9 +6,10 @@ import { filter } from 'rxjs/operators';
   providedIn: 'root',
 })
 export class AtualizacaoService {
+  private swUpdate = inject(SwUpdate);
   atualizacaoDisponivel = false;
 
-  constructor(private swUpdate: SwUpdate) {
+  constructor() {
     if (this.swUpdate.isEnabled) {
       // Verificar atualizações a cada 6 horas
       setInterval(() => {

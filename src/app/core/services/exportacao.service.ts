@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
@@ -9,7 +9,7 @@ import { HistoricoRodada } from '../models/sala.model';
   providedIn: 'root',
 })
 export class ExportacaoService {
-  constructor(private datePipe: DatePipe) {}
+  private datePipe = inject(DatePipe);
 
   /**
    * Exporta um elemento DOM para uma imagem PNG

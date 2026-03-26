@@ -1,19 +1,21 @@
 <!-- Banner de DESCONEXÃO -->
-<div
-  *ngIf="!estaOnline()"
-  class="fixed bottom-4 left-1/2 transform -translate-x-1/2 px-4 py-2 bg-red-500 text-white rounded-lg shadow-lg z-50 animate-pulse flex items-center space-x-2"
-  role="alert"
-  aria-live="assertive">
-  <span class="w-2 h-2 bg-white rounded-full"></span>
-  <span>Você está offline</span>
-</div>
+@if (!estaOnline()) {
+  <div
+    class="fixed bottom-4 left-1/2 transform -translate-x-1/2 px-4 py-2 bg-red-500 text-white rounded-lg shadow-lg z-50 animate-pulse flex items-center space-x-2"
+    role="alert"
+    aria-live="assertive">
+    <span class="w-2 h-2 bg-white rounded-full"></span>
+    <span>Você está offline</span>
+  </div>
+}
 
 <!-- Banner de RECONEXÃO -->
-<div
-  *ngIf="exibirBannerReconectado()"
-  class="fixed bottom-4 left-1/2 transform -translate-x-1/2 px-4 py-2 bg-green-500 text-white rounded-lg shadow-lg z-50 animate-fade-in flex items-center space-x-2"
-  role="status"
-  aria-live="polite">
-  <span class="w-2 h-2 bg-white rounded-full animate-pulse"></span>
-  <span>Você está online</span>
-</div>
+@if (exibirBannerReconectado()) {
+  <div
+    class="fixed bottom-4 left-1/2 transform -translate-x-1/2 px-4 py-2 bg-green-500 text-white rounded-lg shadow-lg z-50 animate-fade-in flex items-center space-x-2"
+    role="status"
+    aria-live="polite">
+    <span class="w-2 h-2 bg-white rounded-full animate-pulse"></span>
+    <span>Você está online</span>
+  </div>
+}

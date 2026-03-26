@@ -17,102 +17,100 @@
     <app-sala-loading [carregando]="carregando()" [erro]="erro()" (voltar)="router.navigate(['/'])"> </app-sala-loading>
 
     <!-- Conteúdo quando sala está carregada -->
-    <ng-container *ngIf="!carregando() && !erro() && sala">
+    @if (!carregando() && !erro() && sala) {
       <!-- Toggle Votação / Histórico -->
       <app-sala-alternar-layout
         [mostrandoHistorico]="mostrandoHistorico()"
         (alternarVisualizacao)="mostrarHistorico($event)">
       </app-sala-alternar-layout>
-
       <div class="p-6">
         <!-- Conteúdo da votação atual (esconder quando estiver no histórico) -->
-        <div *ngIf="!mostrandoHistorico()" class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <!-- Lista de participantes (coluna esquerda) -->
-          <app-jogadores-lista
-            [jogadores]="sala.jogadores"
-            [nomeDono]="sala.nomeDono"
-            [permissaoRemover]="ehDonoDaSala()"
-            (removerJogador)="removerParticipante($event)">
-          </app-jogadores-lista>
-
-          <!-- Área de votação (coluna do meio e direita) -->
-          <div class="bg-white rounded-lg border border-gray-200 p-4 col-span-1 md:col-span-2">
-            <ng-container *ngIf="sala.status !== 'encerrada'; else salaEncerrada">
-              <!-- Status da votação - Área fixa para mobile -->
-              <app-status-votacao
-                [numeroRodada]="sala.rodadaAtual"
-                [usuario]="usuarioService.usuarioAtual()"
-                [votosRevelados]="sala.votosRevelados">
-              </app-status-votacao>
-
-              <!-- ÁREA DE VOTAÇÃO (quando votos não revelados) -->
-              <app-cartao-votacao
-                *ngIf="!sala.votosRevelados"
-                [cartasDisponiveis]="cartasPoker"
-                [valorSelecionado]="cartaSelecionada()"
-                [tipoUsuario]="usuarioService.usuarioAtual()?.tipo || 'espectador'"
-                [votacaoEncerrada]="sala.votosRevelados"
-                [participantesQueVotaram]="obterParticipantesQueVotaram()"
-                [totalParticipantes]="obterTotalParticipantes()"
-                (selecionarCarta)="votar($event)">
-              </app-cartao-votacao>
-
-              <!-- ÁREA DE RESULTADOS (quando votos revelados) -->
-              <app-resultado-votacao
-                *ngIf="sala.votosRevelados"
-                [jogadores]="sala.jogadores"
-                [nomeDono]="sala.nomeDono"
-                [ehModerador]="ehDonoDaSala()"
-                [pontuacaoFinal]="pontuacaoFinal()"
-                [temEmpate]="verificarEmpate().temEmpate"
-                [valorMaisVotado]="calcularMaisVotado().valor"
-                [contagemMaisVotado]="calcularMaisVotado().contagem"
-                [totalVotosValidos]="calcularMaisVotado().total"
-                [valoresEmpatados]="verificarEmpate().valores"
-                (pontuacaoFinalMudou)="atualizarPontuacaoFinal($event)">
-              </app-resultado-votacao>
-
-              <!-- Controles de moderador -->
-              <app-sala-painel-moderacao
-                *ngIf="ehDonoDaSala()"
-                [ehModerador]="ehDonoDaSala()"
-                [votosRevelados]="sala.votosRevelados"
-                [descricaoNovaRodada]="descricaoNovaRodada()"
-                [processando]="criandoNovaRodada()"
-                [temEmpate]="verificarEmpate().temEmpate"
-                [participantesQueVotaram]="obterParticipantesQueVotaram()"
-                [totalParticipantes]="obterTotalParticipantes()"
-                (revelarVotos)="revelarVotos()"
-                (reiniciarVotacao)="ocultarVotos()"
-                (descricaoMudou)="atualizarDescricaoNovaRodada($event)"
-                (criarNovaRodada)="iniciarNovaRodada()"
-                (encerrarSala)="encerrarSala()">
-              </app-sala-painel-moderacao>
-            </ng-container>
-
-            <ng-template #salaEncerrada>
-              <app-sala-encerrada
-                [titulo]="'Sala Encerrada'"
-                [mensagem]="'Esta sala foi encerrada pelo moderador.<br />Obrigado por participar!'"
-                [mostrarBotaoVoltar]="true"
-                (voltar)="router.navigate(['/'])">
-              </app-sala-encerrada>
-            </ng-template>
+        @if (!mostrandoHistorico()) {
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Lista de participantes (coluna esquerda) -->
+            <app-jogadores-lista
+              [jogadores]="sala.jogadores"
+              [nomeDono]="sala.nomeDono"
+              [permissaoRemover]="ehDonoDaSala()"
+              (removerJogador)="removerParticipante($event)">
+            </app-jogadores-lista>
+            <!-- Área de votação (coluna do meio e direita) -->
+            <div class="bg-white rounded-lg border border-gray-200 p-4 col-span-1 md:col-span-2">
+              @if (sala.status !== 'encerrada') {
+                <!-- Status da votação - Área fixa para mobile -->
+                <app-status-votacao
+                  [numeroRodada]="sala.rodadaAtual"
+                  [usuario]="usuarioService.usuarioAtual()"
+                  [votosRevelados]="sala.votosRevelados">
+                </app-status-votacao>
+                <!-- ÁREA DE VOTAÇÃO (quando votos não revelados) -->
+                @if (!sala.votosRevelados) {
+                  <app-cartao-votacao
+                    [cartasDisponiveis]="cartasPoker"
+                    [valorSelecionado]="cartaSelecionada()"
+                    [tipoUsuario]="usuarioService.usuarioAtual()?.tipo || 'espectador'"
+                    [votacaoEncerrada]="sala.votosRevelados"
+                    [participantesQueVotaram]="obterParticipantesQueVotaram()"
+                    [totalParticipantes]="obterTotalParticipantes()"
+                    (selecionarCarta)="votar($event)">
+                  </app-cartao-votacao>
+                }
+                <!-- ÁREA DE RESULTADOS (quando votos revelados) -->
+                @if (sala.votosRevelados) {
+                  <app-resultado-votacao
+                    [jogadores]="sala.jogadores"
+                    [nomeDono]="sala.nomeDono"
+                    [ehModerador]="ehDonoDaSala()"
+                    [pontuacaoFinal]="pontuacaoFinal()"
+                    [temEmpate]="verificarEmpate().temEmpate"
+                    [valorMaisVotado]="calcularMaisVotado().valor"
+                    [contagemMaisVotado]="calcularMaisVotado().contagem"
+                    [totalVotosValidos]="calcularMaisVotado().total"
+                    [valoresEmpatados]="verificarEmpate().valores"
+                    (pontuacaoFinalMudou)="atualizarPontuacaoFinal($event)">
+                  </app-resultado-votacao>
+                }
+                <!-- Controles de moderador -->
+                @if (ehDonoDaSala()) {
+                  <app-sala-painel-moderacao
+                    [ehModerador]="ehDonoDaSala()"
+                    [votosRevelados]="sala.votosRevelados"
+                    [descricaoNovaRodada]="descricaoNovaRodada()"
+                    [processando]="criandoNovaRodada()"
+                    [temEmpate]="verificarEmpate().temEmpate"
+                    [participantesQueVotaram]="obterParticipantesQueVotaram()"
+                    [totalParticipantes]="obterTotalParticipantes()"
+                    (revelarVotos)="revelarVotos()"
+                    (reiniciarVotacao)="ocultarVotos()"
+                    (descricaoMudou)="atualizarDescricaoNovaRodada($event)"
+                    (criarNovaRodada)="iniciarNovaRodada()"
+                    (encerrarSala)="encerrarSala()">
+                  </app-sala-painel-moderacao>
+                }
+              } @else {
+                <app-sala-encerrada
+                  [titulo]="'Sala Encerrada'"
+                  [mensagem]="'Esta sala foi encerrada pelo moderador.<br />Obrigado por participar!'"
+                  [mostrarBotaoVoltar]="true"
+                  (voltar)="router.navigate(['/'])">
+                </app-sala-encerrada>
+              }
+            </div>
           </div>
-        </div>
-
+        }
         <!-- Conteúdo do histórico -->
-        <app-historico
-          *ngIf="mostrandoHistorico()"
-          [historicoRodadas]="sala.historicoRodadas"
-          [nomeDono]="sala.nomeDono"
-          [rodadaSelecionada]="rodadaSelecionada()"
-          [codigoSala]="salaId"
-          (selecionarRodada)="selecionarRodadaHistorico($event)"
-          (voltarParaLista)="voltarParaListaHistorico()">
-        </app-historico>
+        @if (mostrandoHistorico()) {
+          <app-historico
+            [historicoRodadas]="sala.historicoRodadas"
+            [nomeDono]="sala.nomeDono"
+            [rodadaSelecionada]="rodadaSelecionada()"
+            [codigoSala]="salaId"
+            (selecionarRodada)="selecionarRodadaHistorico($event)"
+            (voltarParaLista)="voltarParaListaHistorico()">
+          </app-historico>
+        }
       </div>
-    </ng-container>
+    }
 
     <!-- Rodapé -->
     <div class="px-6 py-3 bg-gray-50 text-center text-xs text-gray-500 border-t">Desenvolvido por Danilo Silva</div>

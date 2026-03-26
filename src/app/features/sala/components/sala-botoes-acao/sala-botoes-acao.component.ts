@@ -1,42 +1,42 @@
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, input, output } from '@angular/core';
+import { NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SafeHtml } from '@angular/platform-browser';
 import { ModalComponent } from '../../../../shared/components/modal/modal.component';
 import { IconesService } from '../../../../core/services/icones.service';
 
 @Component({
-  selector: 'app-sala-botoes-acao',
-  standalone: true,
-  imports: [CommonModule, FormsModule, ModalComponent],
-  templateUrl: './sala-botoes-acao.component.html',
+    selector: 'app-sala-botoes-acao',
+    imports: [NgClass, FormsModule, ModalComponent],
+    templateUrl: './sala-botoes-acao.component.html'
 })
 export class SalaBotoesAcaoComponent {
   private iconesService = inject(IconesService);
 
-  @Input() votosRevelados: boolean = false;
-  @Input() descricaoNovaRodada: string = '';
-  @Input() processando: boolean = false;
-  @Input() temEmpate: boolean = false;
-  @Input() participantesQueVotaram: number = 0;
-  @Input() totalParticipantes: number = 0; // 🆕 Novo input adicionado
+  readonly votosRevelados = input<boolean>(false);
+  readonly descricaoNovaRodada = input<string>('');
+  readonly processando = input<boolean>(false);
+  readonly temEmpate = input<boolean>(false);
+  readonly participantesQueVotaram = input<number>(0);
+  readonly totalParticipantes = input<number>(0); // 🆕 Novo input adicionado
 
-  @Output() revelarVotos = new EventEmitter<void>();
-  @Output() reiniciarVotacao = new EventEmitter<void>();
-  @Output() descricaoMudou = new EventEmitter<string>();
-  @Output() criarNovaRodada = new EventEmitter<void>();
-  @Output() encerrarSala = new EventEmitter<void>();
+  readonly revelarVotos = output<void>();
+  readonly reiniciarVotacao = output<void>();
+  readonly descricaoMudou = output<string>();
+  readonly criarNovaRodada = output<void>();
+  readonly encerrarSala = output<void>();
 
   modalNovaRodadaAberto = false;
 
   // 🆕 Getter para verificar se pode revelar votos
   get podeRevelarVotos(): boolean {
-    return this.participantesQueVotaram === this.totalParticipantes && this.totalParticipantes > 0;
+    const totalParticipantes = this.totalParticipantes();
+    return this.participantesQueVotaram() === totalParticipantes && totalParticipantes > 0;
   }
 
   // 🆕 Getter para o texto dinâmico do botão
   get textoRevelarVotos(): string {
-    if (this.totalParticipantes === 0) {
+    if (this.totalParticipantes() === 0) {
       return 'Aguardando participantes';
     }
 
@@ -75,21 +75,23 @@ export class SalaBotoesAcaoComponent {
   }
 
   aoRevelarVotos(): void {
+    // TODO: The 'emit' function requires a mandatory void argument
     this.revelarVotos.emit();
   }
 
   aoReiniciarVotacao(): void {
+    // TODO: The 'emit' function requires a mandatory void argument
     this.reiniciarVotacao.emit();
   }
 
   aoEncerrarSala(): void {
+    // TODO: The 'emit' function requires a mandatory void argument
     this.encerrarSala.emit();
   }
 
   atualizarDescricao(event: Event): void {
     const input = event.target as HTMLInputElement;
     const valor = input.value;
-    this.descricaoNovaRodada = valor;
     this.descricaoMudou.emit(valor);
   }
 
@@ -102,7 +104,8 @@ export class SalaBotoesAcaoComponent {
   }
 
   confirmarNovaRodada(): void {
-    if (this.descricaoNovaRodada) {
+    if (this.descricaoNovaRodada()) {
+      // TODO: The 'emit' function requires a mandatory void argument
       this.criarNovaRodada.emit();
       this.modalNovaRodadaAberto = false;
     }
@@ -110,11 +113,11 @@ export class SalaBotoesAcaoComponent {
 
   obterClassesBotaoNovaRodada(): object {
     return {
-      'bg-green-600 hover:bg-green-700': !this.temEmpate && !this.processando,
-      'bg-amber-500 hover:bg-amber-600': this.temEmpate && !this.processando,
-      'bg-gray-300': this.processando,
-      'opacity-70': this.processando,
-      'cursor-not-allowed': this.processando,
+      'bg-green-600 hover:bg-green-700': !this.temEmpate() && !this.processando(),
+      'bg-amber-500 hover:bg-amber-600': this.temEmpate() && !this.processando(),
+      'bg-gray-300': this.processando(),
+      'opacity-70': this.processando(),
+      'cursor-not-allowed': this.processando(),
     };
   }
 }

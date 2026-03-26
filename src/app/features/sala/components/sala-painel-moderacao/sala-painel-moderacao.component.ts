@@ -1,25 +1,24 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, input, output } from '@angular/core';
+
 import { SalaBotoesAcaoComponent } from '../sala-botoes-acao/sala-botoes-acao.component';
 
 @Component({
-  selector: 'app-sala-painel-moderacao',
-  standalone: true,
-  imports: [CommonModule, SalaBotoesAcaoComponent],
-  templateUrl: './sala-painel-moderacao.component.html',
+    selector: 'app-sala-painel-moderacao',
+    imports: [SalaBotoesAcaoComponent],
+    templateUrl: './sala-painel-moderacao.component.html'
 })
 export class SalaPainelModeracaoComponent {
-  @Input() ehModerador: boolean = false;
-  @Input() votosRevelados: boolean = false;
-  @Input() descricaoNovaRodada: string = '';
-  @Input() processando: boolean = false;
-  @Input() temEmpate: boolean = false;
-  @Input() participantesQueVotaram: number = 0;
-  @Input() totalParticipantes: number = 0; // 🆕 Novo input
+  readonly ehModerador = input<boolean>(false);
+  readonly votosRevelados = input<boolean>(false);
+  readonly descricaoNovaRodada = input<string>('');
+  readonly processando = input<boolean>(false);
+  readonly temEmpate = input<boolean>(false);
+  readonly participantesQueVotaram = input<number>(0);
+  readonly totalParticipantes = input<number>(0); // 🆕 Novo input
 
-  @Output() revelarVotos = new EventEmitter<void>();
-  @Output() reiniciarVotacao = new EventEmitter<void>();
-  @Output() descricaoMudou = new EventEmitter<string>();
-  @Output() criarNovaRodada = new EventEmitter<void>();
-  @Output() encerrarSala = new EventEmitter<void>();
+  readonly revelarVotos = output<void>();
+  readonly reiniciarVotacao = output<void>();
+  readonly descricaoMudou = output<string>();
+  readonly criarNovaRodada = output<void>();
+  readonly encerrarSala = output<void>();
 }

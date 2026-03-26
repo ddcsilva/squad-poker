@@ -1,13 +1,12 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, input, output } from '@angular/core';
+
 
 @Component({
-  selector: 'app-sala-alternar-layout',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './sala-alternar-layout.component.html',
+    selector: 'app-sala-alternar-layout',
+    imports: [],
+    templateUrl: './sala-alternar-layout.component.html'
 })
 export class SalaAlternarLayoutComponent {
-  @Input() mostrandoHistorico: boolean = false;
-  @Output() alternarVisualizacao = new EventEmitter<boolean>();
+  readonly mostrandoHistorico = input<boolean>(false);
+  readonly alternarVisualizacao = output<boolean>();
 }

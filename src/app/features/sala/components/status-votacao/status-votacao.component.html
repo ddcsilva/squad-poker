@@ -1,37 +1,41 @@
 <div class="mb-4 p-3 bg-gray-50 rounded-lg border-l-4 border-poker-blue shadow-sm" role="status">
   <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center">
-    <div class="text-sm font-medium text-gray-700 mb-1 sm:mb-0">Rodada {{ numeroRodada }}</div>
+    <div class="text-sm font-medium text-gray-700 mb-1 sm:mb-0">Rodada {{ numeroRodada() }}</div>
 
-    <div class="text-sm" *ngIf="usuario">
-      <!-- Participante que já votou -->
-      <span
-        *ngIf="!votosRevelados && usuario.tipo === 'participante' && usuario.voto"
-        class="bg-green-100 text-green-800 px-2 py-1 rounded font-medium flex items-center">
-        <span [innerHTML]="iconeVotou"></span>
-        Você votou: {{ usuario.voto }}
-      </span>
-
-      <!-- Participante que ainda não votou -->
-      <span
-        *ngIf="!votosRevelados && usuario.tipo === 'participante' && !usuario.voto"
-        class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded font-medium flex items-center">
-        <span [innerHTML]="iconeAguardando"></span>
-        Aguardando seu voto...
-      </span>
-
-      <!-- Espectador -->
-      <span
-        *ngIf="!votosRevelados && usuario.tipo === 'espectador'"
-        class="bg-blue-100 text-blue-800 px-2 py-1 rounded font-medium flex items-center">
-        <span [innerHTML]="iconeEspectador"></span>
-        Modo espectador
-      </span>
-
-      <!-- Votos revelados -->
-      <span *ngIf="votosRevelados" class="bg-green-100 text-green-800 px-2 py-1 rounded font-medium flex items-center">
-        <span [innerHTML]="iconeResultados"></span>
-        Resultados revelados
-      </span>
-    </div>
+    @if (usuario(); as usr) {
+      <div class="text-sm">
+        <!-- Participante que já votou -->
+        @if (!votosRevelados() && usr.tipo === 'participante' && usr.voto) {
+          <span
+            class="bg-green-100 text-green-800 px-2 py-1 rounded font-medium flex items-center">
+            <span [innerHTML]="iconeVotou"></span>
+            Você votou: {{ usr.voto }}
+          </span>
+        }
+        <!-- Participante que ainda não votou -->
+        @if (!votosRevelados() && usr.tipo === 'participante' && !usr.voto) {
+          <span
+            class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded font-medium flex items-center">
+            <span [innerHTML]="iconeAguardando"></span>
+            Aguardando seu voto...
+          </span>
+        }
+        <!-- Espectador -->
+        @if (!votosRevelados() && usr.tipo === 'espectador') {
+          <span
+            class="bg-blue-100 text-blue-800 px-2 py-1 rounded font-medium flex items-center">
+            <span [innerHTML]="iconeEspectador"></span>
+            Modo espectador
+          </span>
+        }
+        <!-- Votos revelados -->
+        @if (votosRevelados()) {
+          <span class="bg-green-100 text-green-800 px-2 py-1 rounded font-medium flex items-center">
+            <span [innerHTML]="iconeResultados"></span>
+            Resultados revelados
+          </span>
+        }
+      </div>
+    }
   </div>
 </div>

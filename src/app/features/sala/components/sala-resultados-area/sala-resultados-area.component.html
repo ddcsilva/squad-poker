@@ -14,17 +14,18 @@
   </app-resultado-votacao>
 
   <!-- Controles de moderador -->
-  <app-controles-moderacao
-    *ngIf="ehModerador"
-    [votosRevelados]="votosRevelados"
-    [descricaoNovaRodada]="descricaoNovaRodada"
-    [processando]="processando"
-    [temEmpate]="temEmpate"
-    [participantesQueVotaram]="participantesQueVotaram"
-    (revelarVotos)="revelarVotos.emit()"
-    (reiniciarVotacao)="reiniciarVotacao.emit()"
-    (descricaoMudou)="descricaoMudou.emit($event)"
-    (criarNovaRodada)="criarNovaRodada.emit()"
-    (encerrarSala)="encerrarSala.emit()">
-  </app-controles-moderacao>
+  @if (ehModerador) {
+    <app-controles-moderacao
+      [votosRevelados]="votosRevelados"
+      [descricaoNovaRodada]="descricaoNovaRodada"
+      [processando]="processando"
+      [temEmpate]="temEmpate"
+      [participantesQueVotaram]="participantesQueVotaram"
+      (revelarVotos)="revelarVotos.emit()"
+      (reiniciarVotacao)="reiniciarVotacao.emit()"
+      (descricaoMudou)="descricaoMudou.emit($event)"
+      (criarNovaRodada)="criarNovaRodada.emit()"
+      (encerrarSala)="encerrarSala.emit()">
+    </app-controles-moderacao>
+  }
 </div>

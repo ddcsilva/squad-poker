@@ -1,21 +1,20 @@
-import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, input, output } from '@angular/core';
+
 import { SafeHtml } from '@angular/platform-browser';
 import { IconesService } from '../../../core/services/icones.service';
 
 @Component({
-  selector: 'app-cartao-poker',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './cartao-poker.component.html',
+    selector: 'app-cartao-poker',
+    imports: [],
+    templateUrl: './cartao-poker.component.html'
 })
 export class CartaoPokerComponent {
   private iconesService = inject(IconesService);
 
-  @Input() valor!: string;
-  @Input() selecionado = false;
-  @Input() desabilitado = false;
-  @Output() selecionar = new EventEmitter<string>();
+  readonly valor = input.required<string>();
+  readonly selecionado = input(false);
+  readonly desabilitado = input(false);
+  readonly selecionar = output<string>();
 
   get iconeSelecionado(): SafeHtml {
     return this.iconesService.iconeSelecionado;

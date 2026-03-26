@@ -1,31 +1,33 @@
 <div class="animate-fade-in">
   <!-- Visão de lista: Lista todas as rodadas (visível quando não há rodada selecionada) -->
-  <app-historico-lista
-    *ngIf="!rodadaSelecionada"
-    [historicoRodadas]="historicoRodadas"
-    [exportandoPDF]="exportandoPDF()"
-    (selecionarRodada)="selecionarRodada.emit($event)"
-    (exportarHistorico)="exportarHistoricoCompleto()">
-  </app-historico-lista>
+  @if (!rodadaSelecionada()) {
+    <app-historico-lista
+      [historicoRodadas]="historicoRodadas()"
+      [exportandoPDF]="exportandoPDF()"
+      (selecionarRodada)="selecionarRodada.emit($event)"
+      (exportarHistorico)="exportarHistoricoCompleto()">
+    </app-historico-lista>
+  }
 
   <!-- Visão de detalhe: Uma rodada específica (visível quando há rodada selecionada) -->
-  <app-historico-detalhes
-    *ngIf="rodadaSelecionada"
-    [rodada]="rodadaSelecionada"
-    [nomeDono]="nomeDono"
-    [exportandoPNG]="exportandoPNG()"
-    (voltar)="voltarParaLista.emit()"
-    (exportar)="aoExportarRodada()">
-  </app-historico-detalhes>
+  @if (rodadaSelecionada(); as rodada) {
+    <app-historico-detalhes
+      [rodada]="rodada"
+      [nomeDono]="nomeDono()"
+      [exportandoPNG]="exportandoPNG()"
+      (voltar)="voltarParaLista.emit()"
+      (exportar)="aoExportarRodada()">
+    </app-historico-detalhes>
+  }
 </div>
 
 <!-- Template usado para exportação -->
 <app-template-exportacao
-  [numeroRodada]="rodadaSelecionada?.numero || 0"
-  [descricaoRodada]="rodadaSelecionada?.descricao || ''"
-  [pontuacaoFinal]="rodadaSelecionada?.pontuacaoFinal || ''"
+  [numeroRodada]="rodadaSelecionada()?.numero || 0"
+  [descricaoRodada]="rodadaSelecionada()?.descricao || ''"
+  [pontuacaoFinal]="rodadaSelecionada()?.pontuacaoFinal || ''"
   [participantes]="mapearParticipantesParaTemplate()"
-  [codigoSala]="codigoSala"
+  [codigoSala]="codigoSala()"
   [dataRodada]="dataRodadaSelecionada"
   [visivel]="templateVisivel()">
 </app-template-exportacao>

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { Usuario } from '../../../../core/models/usuario.model';
 import { ResultadoVotacaoComponent } from '../resultado-votacao/resultado-votacao.component';
 import { ControlesModeracaoComponent } from '../controles-moderacao/controles-moderacao.component';
@@ -7,7 +7,7 @@ import { ControlesModeracaoComponent } from '../controles-moderacao/controles-mo
 @Component({
   selector: 'app-sala-resultados-area',
   standalone: true,
-  imports: [CommonModule, ResultadoVotacaoComponent, ControlesModeracaoComponent],
+  imports: [ResultadoVotacaoComponent, ControlesModeracaoComponent],
   templateUrl: './sala-resultados-area.component.html',
 })
 export class SalaResultadosAreaComponent {

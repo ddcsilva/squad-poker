@@ -1,5 +1,5 @@
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { SalaService } from '../../core/services/sala.service';
@@ -9,10 +9,9 @@ import { IconesService } from '../../core/services/icones.service';
 import { SalaValidators } from '../../core/validators/sala.validators';
 
 @Component({
-  selector: 'app-entrada',
-  standalone: true,
-  imports: [CommonModule, FormsModule],
-  templateUrl: './entrada.component.html',
+    selector: 'app-entrada',
+    imports: [FormsModule],
+    templateUrl: './entrada.component.html'
 })
 export class EntradaComponent implements OnInit {
   private iconesService = inject(IconesService);

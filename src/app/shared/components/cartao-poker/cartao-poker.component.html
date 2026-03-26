@@ -1,24 +1,25 @@
 <div
   class="w-16 h-24 md:w-20 md:h-28 bg-white rounded-lg shadow-md border-2 flex items-center justify-center cursor-pointer transition-all duration-300 relative"
-  [class.border-poker-blue]="selecionado"
-  [class.border-gray-200]="!selecionado"
-  [class.bg-white]="!selecionado"
-  [class.bg-poker-light]="selecionado"
-  [class.transform]="selecionado"
-  [class.scale-110]="selecionado"
-  [class.shadow-xl]="selecionado"
-  [class.z-10]="selecionado"
-  [class.hover:border-gray-400]="!selecionado"
-  [class.hover:shadow-lg]="!selecionado"
-  [class.opacity-50]="desabilitado"
-  [class.cursor-not-allowed]="desabilitado"
-  (click)="!desabilitado && selecionar.emit(valor)">
-  <span class="text-2xl font-bold transition-all" [class.text-poker-blue]="selecionado">{{ valor }}</span>
+  [class.border-poker-blue]="selecionado()"
+  [class.border-gray-200]="!selecionado()"
+  [class.bg-white]="!selecionado()"
+  [class.bg-poker-light]="selecionado()"
+  [class.transform]="selecionado()"
+  [class.scale-110]="selecionado()"
+  [class.shadow-xl]="selecionado()"
+  [class.z-10]="selecionado()"
+  [class.hover:border-gray-400]="!selecionado()"
+  [class.hover:shadow-lg]="!selecionado()"
+  [class.opacity-50]="desabilitado()"
+  [class.cursor-not-allowed]="desabilitado()"
+  (click)="!desabilitado() && selecionar.emit(valor())">
+  <span class="text-2xl font-bold transition-all" [class.text-poker-blue]="selecionado()">{{ valor() }}</span>
 
   <!-- Indicador de seleção (visível apenas quando selecionado) -->
-  <div
-    *ngIf="selecionado"
-    class="absolute top-1 right-1 w-5 h-5 bg-poker-blue rounded-full flex items-center justify-center shadow-sm">
-    <span [innerHTML]="iconeSelecionado"></span>
-  </div>
+  @if (selecionado()) {
+    <div
+      class="absolute top-1 right-1 w-5 h-5 bg-poker-blue rounded-full flex items-center justify-center shadow-sm">
+      <span [innerHTML]="iconeSelecionado"></span>
+    </div>
+  }
 </div>

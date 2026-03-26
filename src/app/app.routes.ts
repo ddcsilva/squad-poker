@@ -1,9 +1,7 @@
 import { Routes } from '@angular/router';
-import { EntradaComponent } from './features/entrada/entrada.component';
-import { SalaComponent } from './features/sala/sala.component';
 
 export const routes: Routes = [
-  { path: '', component: EntradaComponent },
-  { path: 'sala/:id', component: SalaComponent },
+  { path: '', loadComponent: () => import('./features/entrada/entrada.component').then(m => m.EntradaComponent) },
+  { path: 'sala/:id', loadComponent: () => import('./features/sala/sala.component').then(m => m.SalaComponent) },
   { path: '**', redirectTo: '' },
 ];

@@ -1,5 +1,5 @@
 import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop'; // 🆕 Import essencial
 import { SalaService } from '../../core/services/sala.service';
@@ -20,10 +20,8 @@ import { VotacaoService } from '../../core/services/votacao.service';
 import { VotoValidators } from '../../core/validators/voto.validators';
 
 @Component({
-  selector: 'app-sala',
-  standalone: true,
-  imports: [
-    CommonModule,
+    selector: 'app-sala',
+    imports: [
     JogadoresListaComponent,
     HistoricoComponent,
     CabecalhoSalaComponent,
@@ -34,9 +32,9 @@ import { VotoValidators } from '../../core/validators/voto.validators';
     CartaoVotacaoComponent,
     ResultadoVotacaoComponent,
     SalaPainelModeracaoComponent,
-    SalaRemoverParticipanteModalComponent,
-  ],
-  templateUrl: './sala.component.html',
+    SalaRemoverParticipanteModalComponent
+],
+    templateUrl: './sala.component.html'
 })
 export class SalaComponent implements OnInit {
   // Injeção de dependências

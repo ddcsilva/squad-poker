@@ -1,5 +1,5 @@
-import { Component, EventEmitter, Input, Output, ViewChild, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, signal, input, output, viewChild } from '@angular/core';
+
 import { HistoricoRodada } from '../../../../core/models/sala.model';
 import { TemplateExportacaoComponent } from '../template-exportacao/template-exportacao.component';
 import { ExportacaoService } from '../../../../core/services/exportacao.service';
@@ -7,37 +7,36 @@ import { HistoricoListaComponent } from './historico-lista/historico-lista.compo
 import { HistoricoDetalhesComponent } from './historico-detalhes/historico-detalhes.component';
 
 @Component({
-  selector: 'app-historico',
-  standalone: true,
-  imports: [CommonModule, TemplateExportacaoComponent, HistoricoListaComponent, HistoricoDetalhesComponent],
-  templateUrl: './historico.component.html',
+    selector: 'app-historico',
+    imports: [TemplateExportacaoComponent, HistoricoListaComponent, HistoricoDetalhesComponent],
+    templateUrl: './historico.component.html'
 })
 export class HistoricoComponent {
-  @Input() historicoRodadas: HistoricoRodada[] = [];
-  @Input() nomeDono: string = '';
-  @Input() rodadaSelecionada: HistoricoRodada | null = null;
-  @Input() codigoSala: string = '';
+  readonly historicoRodadas = input<HistoricoRodada[]>([]);
+  readonly nomeDono = input<string>('');
+  readonly rodadaSelecionada = input<HistoricoRodada | null>(null);
+  readonly codigoSala = input<string>('');
 
   // Referência para capturar o elemento DOM da rodada
-  @ViewChild(TemplateExportacaoComponent) templateExportacao!: TemplateExportacaoComponent;
+  readonly templateExportacao = viewChild.required(TemplateExportacaoComponent);
 
-  @Output() selecionarRodada = new EventEmitter<HistoricoRodada>();
-  @Output() voltarParaLista = new EventEmitter<void>();
+  readonly selecionarRodada = output<HistoricoRodada>();
+  readonly voltarParaLista = output<void>();
 
   // Estados para controle de exportação
   exportandoPNG = signal(false);
   exportandoPDF = signal(false);
   templateVisivel = signal(false);
 
-  constructor(private exportacaoService: ExportacaoService) {}
+  private exportacaoService = inject(ExportacaoService);
 
   // Getter para evitar new Date() no template
   get dataRodadaSelecionada(): Date {
-    return this.rodadaSelecionada?.timestamp || new Date();
+    return this.rodadaSelecionada()?.timestamp || new Date();
   }
 
   async aoExportarRodada(): Promise<void> {
-    if (!this.rodadaSelecionada) return;
+    if (!this.rodadaSelecionada()) return;
 
     try {
       this.exportandoPNG.set(true);
@@ -47,19 +46,21 @@ export class HistoricoComponent {
       setTimeout(async () => {
         try {
           // Verificar se o template está disponível
-          if (!this.templateExportacao?.templateContainer) {
+          const templateExportacao = this.templateExportacao();
+          const templateContainer = templateExportacao.templateContainer();
+          if (!templateContainer) {
             console.error('Template de exportação não encontrado no DOM');
             return;
           }
 
-          const element = this.templateExportacao.templateContainer.nativeElement;
+          const element = templateContainer.nativeElement;
 
           // Usar o serviço para exportar
           await this.exportacaoService.exportarElementoParaPNG(
             element,
             'poker-rodada',
-            this.rodadaSelecionada!.numero,
-            this.rodadaSelecionada!.timestamp
+            this.rodadaSelecionada()!.numero,
+            this.rodadaSelecionada()!.timestamp
           );
         } catch (error) {
           console.error('Erro durante a exportação:', error);
@@ -76,12 +77,13 @@ export class HistoricoComponent {
   }
 
   async exportarHistoricoCompleto(): Promise<void> {
-    if (this.historicoRodadas.length === 0) return;
+    const historicoRodadas = this.historicoRodadas();
+    if (historicoRodadas.length === 0) return;
 
     try {
       this.exportandoPDF.set(true);
 
-      await this.exportacaoService.exportarHistoricoParaPDF(this.historicoRodadas, this.nomeDono);
+      await this.exportacaoService.exportarHistoricoParaPDF(historicoRodadas, this.nomeDono());
     } catch (error) {
       console.error('Erro ao exportar historico completo:', error);
     } finally {
@@ -91,12 +93,13 @@ export class HistoricoComponent {
 
   // Método para mapear dados para o template de exportação
   mapearParticipantesParaTemplate() {
-    if (!this.rodadaSelecionada?.votos) return [];
+    const rodadaSelecionada = this.rodadaSelecionada();
+    if (!rodadaSelecionada?.votos) return [];
 
     const participantes = [];
 
-    for (const jogadorId of Object.keys(this.rodadaSelecionada.votos)) {
-      const jogador = this.rodadaSelecionada.votos[jogadorId];
+    for (const jogadorId of Object.keys(rodadaSelecionada.votos)) {
+      const jogador = rodadaSelecionada.votos[jogadorId];
       participantes.push({
         id: jogadorId,
         nome: jogador.nome,
