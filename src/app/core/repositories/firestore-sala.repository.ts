@@ -1,5 +1,10 @@
 import { Injectable, inject } from '@angular/core';
-import { Firestore, doc, setDoc, getDoc, onSnapshot } from '@angular/fire/firestore';
+import { Firestore, doc, setDoc, getDoc, onSnapshot, runTransaction } from '@angular/fire/firestore';
+import { Usuario } from '../models/usuario.model';
+import {
+  SalaNaoEncontradaError,
+  SalaEncerradaError,
+} from '../errors/sala-errors';
 import { Observable } from 'rxjs';
 import { Sala, HistoricoRodada } from '../models/sala.model';
 import { ISalaRepository } from '../interfaces/sala-repository.interface';
@@ -43,6 +48,34 @@ export class FirestoreSalaRepository implements ISalaRepository {
       console.error('Erro ao buscar sala:', error);
       throw new Error('Não foi possível buscar a sala');
     }
+  }
+
+  /**
+   * Adiciona um jogador à sala de forma atômica usando Firestore Transaction
+   */
+  async adicionarJogador(salaId: string, jogador: Usuario): Promise<Sala> {
+    const salaRef = doc(this.firestore, 'salas', salaId);
+
+    return runTransaction(this.firestore, async (transaction) => {
+      const snapshot = await transaction.get(salaRef);
+
+      if (!snapshot.exists()) {
+        throw new SalaNaoEncontradaError(salaId);
+      }
+
+      const data = snapshot.data();
+
+      if (data['status'] === 'encerrada') {
+        throw new SalaEncerradaError();
+      }
+
+      const sala = this.converterParaSala(data, salaId);
+      sala.jogadores.push(jogador);
+
+      transaction.update(salaRef, { jogadores: sala.jogadores });
+
+      return sala;
+    });
   }
 
   /**

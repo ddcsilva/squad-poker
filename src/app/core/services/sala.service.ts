@@ -91,20 +91,7 @@ export class SalaService {
 
     const dadosSeguros = resultadoValidacao.dadosSanitizados!;
 
-    // 1. Buscar a sala pelo código usando o repositório
-    const sala = await this.salaRepository.buscarPorId(dadosSeguros.codigo);
-
-    // 2. Verificar se a sala existe
-    if (!sala) {
-      throw new SalaNaoEncontradaError(dadosSeguros.codigo);
-    }
-
-    // 3. Verificar se a sala está ativa
-    if (sala.status === 'encerrada') {
-      throw new SalaEncerradaError();
-    }
-
-    // 4. Criar novo usuário
+    // 1. Criar novo usuário
     const novoUsuario: Usuario = {
       id: crypto.randomUUID(),
       nome: dadosSeguros.nome,
@@ -113,13 +100,10 @@ export class SalaService {
       tipo: dadosSeguros.tipo as 'participante' | 'espectador',
     };
 
-    // 5. Adicionar à lista de jogadores
-    sala.jogadores.push(novoUsuario);
+    // 2. Adicionar jogador de forma atômica (usa Firestore Transaction)
+    const sala = await this.salaRepository.adicionarJogador(dadosSeguros.codigo, novoUsuario);
 
-    // 6. Salvar a sala atualizada no repositório
-    await this.salaRepository.salvar(sala);
-
-    // 7. Atualizar o signal
+    // 3. Atualizar o signal
     this.salaAtual.set(sala);
 
     return sala;
