@@ -21,7 +21,7 @@ export class SalaEncerradaComponent {
   private iconesService = inject(IconesService);
 
   readonly titulo = input<string>('Sala Encerrada');
-  readonly mensagem = input<string>('Esta sala foi encerrada pelo moderador.<br />Obrigado por participar!');
+  readonly mensagem = input<string>('Esta sala foi encerrada pelo moderador.\nObrigado por participar!');
   readonly mostrarBotaoVoltar = input<boolean>(false);
 
   readonly voltar = output<void>();

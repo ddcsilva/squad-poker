@@ -242,9 +242,13 @@ export class SalaService {
       throw new SalaEncerradaError();
     }
 
-    // 6. Salvar a rodada atual no histórico (apenas se os votos estiverem revelados)
-    if (sala.votosRevelados) {
-      const rodadaAtual = this.criarHistoricoRodada(sala, dadosSegura.pontuacaoFinal || ''); // 🔄 Era: pontuacaoFinal
+    // 6. Salvar a rodada atual no histórico (sempre preserva votos)
+    const temVotos = sala.jogadores.some(j => j.voto !== null);
+    if (temVotos) {
+      const rodadaAtual = this.criarHistoricoRodada(
+        sala,
+        sala.votosRevelados ? (dadosSegura.pontuacaoFinal || '') : ''
+      );
       sala.historicoRodadas.push(rodadaAtual);
     }
 

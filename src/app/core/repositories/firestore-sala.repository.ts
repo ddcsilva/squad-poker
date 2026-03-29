@@ -43,7 +43,7 @@ export class FirestoreSalaRepository implements ISalaRepository {
         return null;
       }
 
-      return this.converterParaSala(snapshot.data() as any, id);
+      return this.converterParaSala(snapshot.data() as Record<string, unknown>, id);
     } catch (error) {
       console.error('Erro ao buscar sala:', error);
       throw new Error('Não foi possível buscar a sala');
@@ -90,7 +90,7 @@ export class FirestoreSalaRepository implements ISalaRepository {
         snapshot => {
           if (snapshot.exists()) {
             try {
-              const sala = this.converterParaSala(snapshot.data() as any, id);
+              const sala = this.converterParaSala(snapshot.data() as Record<string, unknown>, id);
               observer.next(sala);
             } catch (error) {
               observer.error(new Error('Falha ao processar dados da sala'));
@@ -111,44 +111,88 @@ export class FirestoreSalaRepository implements ISalaRepository {
   }
 
   /**
-   * Converte dados brutos do Firestore para o modelo Sala
+   * Converte dados brutos do Firestore para o modelo Sala com validação de shape
    */
-  private converterParaSala(data: any, id: string): Sala {
-    // Processa as datas do Firestore para o formato Date
-    const criadaEm = this.converterTimestampParaDate(data.criadaEm);
+  private converterParaSala(data: Record<string, unknown>, id: string): Sala {
+    const criadaEm = this.converterTimestampParaDate(data['criadaEm']);
 
-    // Processa as datas nas rodadas do histórico
-    const historicoRodadas: HistoricoRodada[] = Array.isArray(data.historicoRodadas)
-      ? data.historicoRodadas.map((rodada: any) => ({
-          ...rodada,
-          timestamp: this.converterTimestampParaDate(rodada.timestamp),
+    const historicoRodadas: HistoricoRodada[] = Array.isArray(data['historicoRodadas'])
+      ? data['historicoRodadas'].map((rodada: Record<string, unknown>) => ({
+          numero: Number(rodada['numero'] ?? 0),
+          descricao: String(rodada['descricao'] ?? ''),
+          pontuacaoFinal: String(rodada['pontuacaoFinal'] ?? ''),
+          votos: this.converterVotos(rodada['votos']),
+          timestamp: this.converterTimestampParaDate(rodada['timestamp']),
         }))
       : [];
 
-    // Constrói o objeto Sala completo
     return {
-      ...data,
-      id, // Usa o ID fornecido
-      criadaEm,
+      id,
+      nomeDono: String(data['nomeDono'] ?? ''),
+      descricaoVotacao: String(data['descricaoVotacao'] ?? ''),
+      jogadores: this.converterJogadores(data['jogadores']),
+      status: data['status'] === 'encerrada' ? 'encerrada' : 'aguardando',
+      votosRevelados: Boolean(data['votosRevelados']),
+      rodadaAtual: Number(data['rodadaAtual'] ?? 1),
       historicoRodadas,
+      criadaEm,
     };
+  }
+
+  /**
+   * Converte e valida o array de jogadores do Firestore
+   */
+  private converterJogadores(jogadores: unknown): Usuario[] {
+    if (!Array.isArray(jogadores)) return [];
+    return jogadores
+      .filter((j): j is Record<string, unknown> => j != null && typeof j === 'object')
+      .map((j) => ({
+        id: String(j['id'] ?? ''),
+        nome: String(j['nome'] ?? ''),
+        voto: j['voto'] != null ? String(j['voto']) : null,
+        cor: String(j['cor'] ?? ''),
+        tipo: j['tipo'] === 'espectador' ? 'espectador' as const : 'participante' as const,
+      }));
+  }
+
+  /**
+   * Converte e valida o mapa de votos de uma rodada
+   */
+  private converterVotos(votos: unknown): HistoricoRodada['votos'] {
+    if (votos == null || typeof votos !== 'object') return {};
+    const resultado: HistoricoRodada['votos'] = {};
+    for (const [jogadorId, voto] of Object.entries(votos as Record<string, unknown>)) {
+      if (voto != null && typeof voto === 'object') {
+        const v = voto as Record<string, unknown>;
+        resultado[jogadorId] = {
+          valor: String(v['valor'] ?? ''),
+          nome: String(v['nome'] ?? ''),
+          cor: String(v['cor'] ?? ''),
+        };
+      }
+    }
+    return resultado;
   }
 
   /**
    * Converte um timestamp do Firestore para um objeto Date do JavaScript
    */
-  private converterTimestampParaDate(timestamp: any): Date {
+  private converterTimestampParaDate(timestamp: unknown): Date {
     if (!timestamp) return new Date();
 
     // Se já for uma data, retorna ela mesma
     if (timestamp instanceof Date) return timestamp;
 
     // Se for um timestamp do Firestore (tem propriedade seconds)
-    if (timestamp && typeof timestamp === 'object' && 'seconds' in timestamp) {
-      return new Date(timestamp.seconds * 1000);
+    if (typeof timestamp === 'object' && timestamp !== null && 'seconds' in timestamp) {
+      return new Date((timestamp as { seconds: number }).seconds * 1000);
     }
 
-    // Tenta converter outros formatos para Date
-    return new Date(timestamp);
+    // Tenta converter string ou number para Date
+    if (typeof timestamp === 'string' || typeof timestamp === 'number') {
+      return new Date(timestamp);
+    }
+
+    return new Date();
   }
 }
